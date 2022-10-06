@@ -27,7 +27,7 @@ class InntektKlient(
         formaal: String = "Medlemskap"
     ): InntektskomponentResponse {
         val token = stsClient.getToken()
-        try{
+        try {
             return httpClient.post<InntektskomponentResponse>() {
                 url("$baseUrl/rs/api/v1/hentinntektliste")
                 header(HttpHeaders.Authorization, "Bearer $token")
@@ -53,4 +53,4 @@ class InntektKlient(
     private fun LocalDate.tilAarOgMnd() = this.format(DateTimeFormatter.ofPattern("yyyy-MM"))
 }
 
-class InntektKlientException(melding: String, exception: java.lang.Exception):RuntimeException(melding, exception)
+class InntektKlientException(melding: String, exception: java.lang.Exception) : RuntimeException(melding, exception)

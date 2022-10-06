@@ -1,3 +1,5 @@
+@file:Suppress("NonAsciiCharacters")
+
 package no.nav.helsearbeidsgiver.inntekt
 
 import io.ktor.http.HttpStatusCode
@@ -11,7 +13,7 @@ internal class InntektKlientTest {
     @Test
     fun `Skal returnere response når operasjon var velykket`() {
         val klient = buildClient("response.json".loadFromResources(), HttpStatusCode.Accepted)
-        val response:InntektskomponentResponse = runBlocking { klient.hentInntektListe("ident", "call-id", "consumerId") }
+        val response: InntektskomponentResponse = runBlocking { klient.hentInntektListe("ident", "call-id", "consumerId") }
         assertNotNull(response)
         assertNotNull(response.arbeidsInntektMaaned)
     }
@@ -36,7 +38,6 @@ internal class InntektKlientTest {
         }
     }
 
-
     @Test
     fun `Skal håndtere 500`() {
         assertThrows<InntektKlientException> {
@@ -46,5 +47,4 @@ internal class InntektKlientTest {
             }
         }
     }
-
 }
