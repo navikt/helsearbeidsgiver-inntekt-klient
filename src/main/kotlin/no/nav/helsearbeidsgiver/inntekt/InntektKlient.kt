@@ -29,7 +29,7 @@ class InntektKlient(
         val token = stsClient.getToken()
         try {
             return httpClient.post<InntektskomponentResponse>() {
-                url("$baseUrl/rs/api/v1/hentinntektliste")
+                url("$baseUrl/api/v1/hentinntektliste")
                 header(HttpHeaders.Authorization, "Bearer $token")
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
                 header("Nav-Call-Id", callId)
