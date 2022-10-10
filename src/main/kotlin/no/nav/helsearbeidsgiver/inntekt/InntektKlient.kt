@@ -21,8 +21,8 @@ class InntektKlient(
         ident: String,
         callId: String,
         navConsumerId: String,
-        fraOgMed: LocalDate? = null,
-        tilOgMed: LocalDate? = null,
+        fraOgMed: LocalDate,
+        tilOgMed: LocalDate,
         filter: String = "MedlemskapA-inntekt",
         formaal: String = "Medlemskap"
     ): InntektskomponentResponse {
@@ -37,8 +37,8 @@ class InntektKlient(
                 HentInntektListeRequest(
                     ident = Ident(ident, "NATURLIG_IDENT"),
                     ainntektsfilter = filter,
-                    maanedFom = fraOgMed?.tilAarOgMnd(),
-                    maanedTom = tilOgMed?.tilAarOgMnd(),
+                    maanedFom = fraOgMed.tilAarOgMnd(),
+                    maanedTom = tilOgMed.tilAarOgMnd(),
                     formaal = formaal
                 )
             }
