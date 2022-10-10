@@ -12,7 +12,7 @@ internal class InntektKlientTest {
 
     @Test
     fun `Skal returnere response når operasjon var velykket`() {
-        val klient = buildClient("response.json".loadFromResources(), HttpStatusCode.Accepted)
+        val klient = BuildClient("response.json".loadFromResources(), HttpStatusCode.Accepted)
         val response: InntektskomponentResponse = runBlocking { klient.hentInntektListe("ident", "call-id", "consumerId") }
         assertNotNull(response)
         assertNotNull(response.arbeidsInntektMaaned)
@@ -22,7 +22,7 @@ internal class InntektKlientTest {
     fun `Skal håndtere forbidden`() {
         assertThrows<InntektKlientException> {
             runBlocking {
-                val klient = buildClient("response.json".loadFromResources(), HttpStatusCode.Forbidden)
+                val klient = BuildClient("response.json".loadFromResources(), HttpStatusCode.Forbidden)
                 klient.hentInntektListe("ident", "call-id", "consumerId")
             }
         }
@@ -32,7 +32,7 @@ internal class InntektKlientTest {
     fun `Skal håndtere BadRequest`() {
         assertThrows<InntektKlientException> {
             runBlocking {
-                val klient = buildClient("response.json".loadFromResources(), HttpStatusCode.BadRequest)
+                val klient = BuildClient("response.json".loadFromResources(), HttpStatusCode.BadRequest)
                 klient.hentInntektListe("ident", "call-id", "consumerId")
             }
         }
@@ -42,7 +42,7 @@ internal class InntektKlientTest {
     fun `Skal håndtere 500`() {
         assertThrows<InntektKlientException> {
             runBlocking {
-                val klient = buildClient("response.json".loadFromResources(), HttpStatusCode.InternalServerError)
+                val klient = BuildClient("response.json".loadFromResources(), HttpStatusCode.InternalServerError)
                 klient.hentInntektListe("ident", "call-id", "consumerId")
             }
         }

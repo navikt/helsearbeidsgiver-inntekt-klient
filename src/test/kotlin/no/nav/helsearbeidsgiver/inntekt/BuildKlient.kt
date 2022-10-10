@@ -12,7 +12,7 @@ import io.ktor.http.headersOf
 import io.ktor.utils.io.ByteReadChannel
 import no.nav.helsearbeidsgiver.tokenprovider.AccessTokenProvider
 
-fun buildClient(
+fun BuildClient(
     response: String,
     status: HttpStatusCode = HttpStatusCode.OK,
     headers: Headers = headersOf(HttpHeaders.ContentType, "application/json")
