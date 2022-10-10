@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter
 class InntektKlient(
     private val baseUrl: String,
     private val stsClient: AccessTokenProvider,
-    private val httpClient: HttpClient,
+    private val httpClient: HttpClient
 ) {
 
     suspend fun hentInntektListe(
