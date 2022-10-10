@@ -8,14 +8,14 @@ val githubPassword: String by project
 val tokenprovider_version: String by project
 
 plugins {
-    kotlin("jvm") version "1.6.21"
-    kotlin("plugin.serialization") version "1.6.21"
-    id("org.jmailen.kotlinter") version "3.10.0"
+    kotlin("jvm") version "1.7.20"
+    kotlin("plugin.serialization") version "1.7.20"
+    id("org.jmailen.kotlinter") version "3.12.0"
     id("maven-publish")
 }
 
 group = "no.nav.helsearbeidsgiver"
-version = "0.1.1"
+version = "0.1.2"
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
