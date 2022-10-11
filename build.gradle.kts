@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "no.nav.helsearbeidsgiver"
-version = "0.1.4"
+version = "0.1.5"
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
@@ -56,14 +56,15 @@ publishing {
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-json:$ktor_version")
     implementation("io.ktor:ktor-client-serialization:$ktor_version")
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
-    testImplementation("io.ktor:ktor-client-mock:$ktor_version")
-    implementation("no.nav.helsearbeidsgiver:tokenprovider:$tokenprovider_version")
-    testImplementation("io.mockk:mockk:$mockk_version")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.2.0")
+    implementation("no.nav.helsearbeidsgiver:tokenprovider:$tokenprovider_version")
+    // Test
+    testImplementation(kotlin("test"))
+    testImplementation("io.ktor:ktor-client-mock:$ktor_version")
+    testImplementation("io.mockk:mockk:$mockk_version")
 }

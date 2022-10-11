@@ -30,29 +30,35 @@ class InntektKlient(
         formaal: String = "Medlemskap"
     ): InntektskomponentResponse {
         val token = stsClient.getToken()
-        val httpResponse: HttpResponse = httpClient.post("$baseUrl/api/v1/hentinntektliste") {
-            header(HttpHeaders.Authorization, "Bearer $token")
-            header(HttpHeaders.ContentType, ContentType.Application.Json)
-            header("Nav-Call-Id", callId)
-            header("Nav-Consumer-Id", navConsumerId)
-            contentType(ContentType.Application.Json)
-            setBody(
-                HentInntektListeRequest(
-                    ident = Ident(ident, "NATURLIG_IDENT"),
-                    ainntektsfilter = filter,
-                    maanedFom = fraOgMed.tilAarOgMnd(),
-                    maanedTom = tilOgMed.tilAarOgMnd(),
-                    formaal = formaal
+        try {
+            val httpResponse: HttpResponse = httpClient.post("$baseUrl/api/v1/hentinntektliste") {
+                header(HttpHeaders.Authorization, "Bearer $token")
+                header(HttpHeaders.ContentType, ContentType.Application.Json)
+                header("Nav-Call-Id", callId)
+                header("Nav-Consumer-Id", navConsumerId)
+                contentType(ContentType.Application.Json)
+                setBody(
+                    HentInntektListeRequest(
+                        ident = Ident(ident, "NATURLIG_IDENT"),
+                        ainntektsfilter = filter,
+                        maanedFom = fraOgMed.tilAarOgMnd(),
+                        maanedTom = tilOgMed.tilAarOgMnd(),
+                        formaal = formaal
+                    )
                 )
-            )
+            }
+            if (listOf(HttpStatusCode.Accepted).contains(httpResponse.status)) {
+                return httpResponse.body()
+            }
+            throw InntektKlientException("Fikk status: ${httpResponse.status} for callId: $callId", IkkeGodkjentStatus(httpResponse.status.value))
+        } catch (ex: Exception) {
+            throw InntektKlientException("Fikk feil for callId: $callId", ex)
         }
-        if (listOf(HttpStatusCode.Accepted).contains(httpResponse.status)) {
-            return httpResponse.body()
-        }
-        throw InntektKlientException("Fikk status: ${httpResponse.status} for callId: $callId")
     }
 
     private fun LocalDate.tilAarOgMnd() = this.format(DateTimeFormatter.ofPattern("yyyy-MM"))
 }
 
-class InntektKlientException(melding: String) : RuntimeException(melding)
+class IkkeGodkjentStatus(status: Int) : RuntimeException("Fikk status $status")
+
+class InntektKlientException(melding: String, throwable: Throwable) : RuntimeException(melding, throwable)
