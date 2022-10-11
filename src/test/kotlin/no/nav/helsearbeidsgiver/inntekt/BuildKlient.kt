@@ -3,13 +3,14 @@ package no.nav.helsearbeidsgiver.inntekt
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.ByteReadChannel
+import kotlinx.serialization.json.Json
 import no.nav.helsearbeidsgiver.tokenprovider.AccessTokenProvider
 
 fun BuildClient(
@@ -28,11 +29,10 @@ fun BuildClient(
         "http://localhost",
         MockAccessTokenProvider(),
         HttpClient(mockEngine) {
-            install(JsonFeature) {
-                serializer = KotlinxSerializer(
-                    kotlinx.serialization.json.Json {
+            install(ContentNegotiation) {
+                json(
+                    Json {
                         ignoreUnknownKeys = true
-                        // explicitNulls = false
                     }
                 )
             }

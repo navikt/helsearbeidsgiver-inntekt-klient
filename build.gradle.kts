@@ -60,6 +60,8 @@ dependencies {
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-json:$ktor_version")
     implementation("io.ktor:ktor-client-serialization:$ktor_version")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
     testImplementation("io.ktor:ktor-client-mock:$ktor_version")
     implementation("no.nav.helsearbeidsgiver:tokenprovider:$tokenprovider_version")
     testImplementation("io.mockk:mockk:$mockk_version")
