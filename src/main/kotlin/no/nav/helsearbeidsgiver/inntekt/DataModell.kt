@@ -17,7 +17,7 @@ data class HentInntektListeRequest(
 
 @Serializable
 data class InntektskomponentResponse(
-    val arbeidsInntektMaaned: List<ArbeidsinntektMaaned>?,
+    val arbeidsInntektMaaned: List<ArbeidsinntektMaaned>? = null,
     val ident: Ident?
 )
 
