@@ -18,7 +18,7 @@ internal class InntektKlientTest {
 
     @Test
     fun `Skal returnere response når operasjon var velykket`() {
-        val klient = BuildClient("response.json".loadFromResources(), HttpStatusCode.Accepted)
+        val klient = BuildClient("response.json".loadFromResources(), HttpStatusCode.OK)
         val response: InntektskomponentResponse = runBlocking { klient.hentInntektListe("ident", "call-id", "consumerId", FRA, TIL, FILTER, FORMAAL) }
         assertNotNull(response)
         assertNotNull(response.arbeidsInntektMaaned)
