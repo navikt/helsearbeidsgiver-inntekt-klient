@@ -47,7 +47,7 @@ class InntektKlient(
                     )
                 )
             }
-            if (listOf(HttpStatusCode.Accepted).contains(httpResponse.status)) {
+            if (listOf(HttpStatusCode.OK).contains(httpResponse.status)) {
                 return httpResponse.body()
             }
             throw InntektKlientException("Fikk status: ${httpResponse.status} for callId: $callId", IkkeGodkjentStatus(httpResponse.status.value))
