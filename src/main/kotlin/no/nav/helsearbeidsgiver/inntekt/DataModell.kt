@@ -10,121 +10,121 @@ import java.time.YearMonth
 data class HentInntektListeRequest(
     val ident: Ident,
     val ainntektsfilter: String,
-    val maanedFom: String?,
-    val maanedTom: String?,
+    val maanedFom: String? = null,
+    val maanedTom: String? = null,
     val formaal: String
 )
 
 @Serializable
 data class InntektskomponentResponse(
     val arbeidsInntektMaaned: List<ArbeidsinntektMaaned>? = null,
-    val ident: Ident?
+    val ident: Ident? = null
 )
 
 @Serializable
 data class ArbeidsinntektMaaned(
     @Serializable(with = YearMonthSerializer::class)
-    val aarMaaned: YearMonth?,
+    val aarMaaned: YearMonth? = null,
     val avvikListe: List<Avvik>?,
-    val arbeidsInntektInformasjon: ArbeidsInntektInformasjon?
+    val arbeidsInntektInformasjon: ArbeidsInntektInformasjon? = null
 )
 
 @Serializable
 data class Avvik(
-    val ident: Ident?,
-    val opplysningspliktig: Ident?,
-    val virksomhet: Ident?,
+    val ident: Ident? = null,
+    val opplysningspliktig: Ident? = null,
+    val virksomhet: Ident? = null,
     @Serializable(with = YearMonthSerializer::class)
-    val avvikPeriode: YearMonth?,
-    val tekst: String?
+    val avvikPeriode: YearMonth? = null,
+    val tekst: String? = null
 )
 
 @Serializable
 data class Ident(
-    val identifikator: String?,
-    val aktoerType: String?
+    val identifikator: String? = null,
+    val aktoerType: String? = null
 )
 
 @Serializable
 data class ArbeidsInntektInformasjon(
-    val arbeidsforholdListe: List<ArbeidsforholdFrilanser>?,
-    val inntektListe: List<Inntekt>?,
-    val forskuddstrekkListe: List<Forskuddstrekk>?,
-    val fradragListe: List<Fradrag>?
+    val arbeidsforholdListe: List<ArbeidsforholdFrilanser>? = null,
+    val inntektListe: List<Inntekt>? = null,
+    val forskuddstrekkListe: List<Forskuddstrekk>? = null,
+    val fradragListe: List<Fradrag>? = null
 )
 
 @Serializable
 data class ArbeidsforholdFrilanser(
-    val antallTimerPerUkeSomEnFullStillingTilsvarer: Double?,
-    val arbeidstidsordning: String?,
-    val avloenningstype: String?,
+    val antallTimerPerUkeSomEnFullStillingTilsvarer: Double? = null,
+    val arbeidstidsordning: String? = null,
+    val avloenningstype: String? = null,
     @Serializable(with = LocalDateSerializer::class)
-    val sisteDatoForStillingsprosentendring: LocalDate?,
+    val sisteDatoForStillingsprosentendring: LocalDate? = null,
     @Serializable(with = LocalDateSerializer::class)
-    val sisteLoennsendring: LocalDate?,
+    val sisteLoennsendring: LocalDate? = null,
     @Serializable(with = LocalDateSerializer::class)
-    val frilansPeriodeFom: LocalDate?,
+    val frilansPeriodeFom: LocalDate? = null,
     @Serializable(with = LocalDateSerializer::class)
-    val frilansPeriodeTom: LocalDate?,
-    val stillingsprosent: Double?,
-    val yrke: String?,
-    val arbeidsforholdID: String?,
-    val arbeidsforholdIDnav: String?,
-    val arbeidsforholdstype: String?,
-    val arbeidsgiver: Ident?,
-    val arbeidstaker: Ident?
+    val frilansPeriodeTom: LocalDate? = null,
+    val stillingsprosent: Double? = null,
+    val yrke: String? = null,
+    val arbeidsforholdID: String? = null,
+    val arbeidsforholdIDnav: String? = null,
+    val arbeidsforholdstype: String? = null,
+    val arbeidsgiver: Ident? = null,
+    val arbeidstaker: Ident? = null
 )
 
 @Serializable
 data class Arbeidsforhold(
-    val antallTimerPerUkeSomEnFullStillingTilsvarer: Double?,
-    val arbeidstidsordning: String?,
-    val avloenningstype: String?,
+    val antallTimerPerUkeSomEnFullStillingTilsvarer: Double? = null,
+    val arbeidstidsordning: String? = null,
+    val avloenningstype: String? = null,
     @Serializable(with = YearMonthSerializer::class)
-    val sisteDatoForStillingsprosentendring: YearMonth?,
+    val sisteDatoForStillingsprosentendring: YearMonth? = null,
     @Serializable(with = YearMonthSerializer::class)
-    val sisteLoennsendring: YearMonth?,
+    val sisteLoennsendring: YearMonth? = null,
     @Serializable(with = LocalDateSerializer::class)
-    val frilansperiodeFom: LocalDate?,
+    val frilansperiodeFom: LocalDate? = null,
     @Serializable(with = LocalDateSerializer::class)
-    val frilansperiodeTom: LocalDate?,
-    val stillingsprosent: Double?,
-    val yrke: String?,
-    val arbeidsforholdID: String?,
-    val arbeidsforholdIDnav: String?,
-    val arbeidsforholdType: String?,
-    val arbeidsgiver: Ident?,
-    val arbeidstaker: Ident?
+    val frilansperiodeTom: LocalDate? = null,
+    val stillingsprosent: Double? = null,
+    val yrke: String? = null,
+    val arbeidsforholdID: String? = null,
+    val arbeidsforholdIDnav: String? = null,
+    val arbeidsforholdType: String? = null,
+    val arbeidsgiver: Ident? = null,
+    val arbeidstaker: Ident? = null
 )
 
 @Serializable
 data class Inntekt(
-    val inntektType: String?,
-    val beloep: Double?,
-    val fordel: String?,
-    val inntektskilde: String?,
-    val inntektsperiodetype: String?,
-    val inntektsstatus: String?,
+    val inntektType: String? = null,
+    val beloep: Double? = null,
+    val fordel: String? = null,
+    val inntektskilde: String? = null,
+    val inntektsperiodetype: String? = null,
+    val inntektsstatus: String? = null,
     @Serializable(with = YearMonthSerializer::class)
-    val leveringstidspunkt: YearMonth?,
+    val leveringstidspunkt: YearMonth? = null,
     @Serializable(with = YearMonthSerializer::class)
-    val utbetaltIMaaned: YearMonth?,
-    val arbeidsforholdREF: String?,
-    val opplysningspliktig: Ident?,
-    val virksomhet: Ident?,
-    val inntektsmottaker: Ident?,
-    val inngaarIGrunnlagForTrekk: Boolean?,
-    val utloeserArbeidsgiveravgift: Boolean?,
-    val informasjonsstatus: String?,
-    val beskrivelse: String?,
-    val skatteOgAvgiftsregel: String?,
-    val opptjeningsland: String?,
+    val utbetaltIMaaned: YearMonth? = null,
+    val arbeidsforholdREF: String? = null,
+    val opplysningspliktig: Ident? = null,
+    val virksomhet: Ident? = null,
+    val inntektsmottaker: Ident? = null,
+    val inngaarIGrunnlagForTrekk: Boolean? = null,
+    val utloeserArbeidsgiveravgift: Boolean? = null,
+    val informasjonsstatus: String? = null,
+    val beskrivelse: String? = null,
+    val skatteOgAvgiftsregel: String? = null,
+    val opptjeningsland: String? = null,
     @Serializable(with = LocalDateSerializer::class)
-    val opptjeningsperiodeFom: LocalDate?,
+    val opptjeningsperiodeFom: LocalDate? = null,
     @Serializable(with = LocalDateSerializer::class)
-    val opptjeningsperiodeTom: LocalDate?,
-    val skattemessigBosattLand: String?,
-    val tilleggsinformasjon: Tilleggsinformasjon?
+    val opptjeningsperiodeTom: LocalDate? = null,
+    val skattemessigBosattLand: String? = null,
+    val tilleggsinformasjon: Tilleggsinformasjon? = null
 )
 
 enum class InntektType {
@@ -146,35 +146,35 @@ enum class TilleggsinformasjonDetaljerType {
 
 @Serializable
 data class Forskuddstrekk(
-    val beloep: Int?,
-    val beskrivelse: String?,
+    val beloep: Int? = null,
+    val beskrivelse: String? = null,
     @Serializable(with = LocalDateTimeSerializer::class)
-    val leveringstidspunkt: LocalDateTime?,
-    val opplysningspliktig: Ident?,
-    val utbetaler: Ident?,
-    val forskuddstrekkGjelder: Ident?
+    val leveringstidspunkt: LocalDateTime? = null,
+    val opplysningspliktig: Ident? = null,
+    val utbetaler: Ident? = null,
+    val forskuddstrekkGjelder: Ident? = null
 )
 
 @Serializable
 data class Fradrag(
     @Serializable(with = BigDecimalSerializer::class)
-    val beloep: BigDecimal?,
-    val beskrivelse: String?,
-    val fradragsperiode: String?,
+    val beloep: BigDecimal? = null,
+    val beskrivelse: String? = null,
+    val fradragsperiode: String? = null,
     @Serializable(with = LocalDateTimeSerializer::class)
-    val leveringstidspunkt: LocalDateTime?,
-    val inntektspliktig: Ident?,
-    val utbetaler: Ident?,
-    val fradragGjelder: Ident?
+    val leveringstidspunkt: LocalDateTime? = null,
+    val inntektspliktig: Ident? = null,
+    val utbetaler: Ident? = null,
+    val fradragGjelder: Ident? = null
 )
 
 @Serializable
 data class Tilleggsinformasjon(
-    val kategori: String?,
-    val tilleggsinformasjonDetaljer: TilleggsinformasjonDetaljer?
+    val kategori: String? = null,
+    val tilleggsinformasjonDetaljer: TilleggsinformasjonDetaljer? = null
 )
 
 @Serializable
 data class TilleggsinformasjonDetaljer(
-    val detaljerType: TilleggsinformasjonDetaljerType?
+    val detaljerType: TilleggsinformasjonDetaljerType? = null
 )
