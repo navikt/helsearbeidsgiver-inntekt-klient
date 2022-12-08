@@ -10,6 +10,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import io.ktor.serialization.JsonConvertException
 import no.nav.helsearbeidsgiver.tokenprovider.AccessTokenProvider
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -51,6 +52,8 @@ class InntektKlient(
                 return httpResponse.body()
             }
             throw InntektKlientException("Fikk status: ${httpResponse.status} for callId: $callId", IkkeGodkjentStatus(httpResponse.status.value))
+        } catch (jsonEx: JsonConvertException) {
+            throw InntektKlientException("JsonConvert feilet for callId: $callId", jsonEx)
         } catch (ex: Exception) {
             throw InntektKlientException("Fikk feil for callId: $callId", ex)
         }

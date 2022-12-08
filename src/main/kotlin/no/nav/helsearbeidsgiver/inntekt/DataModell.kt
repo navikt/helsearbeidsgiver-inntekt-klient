@@ -25,7 +25,7 @@ data class InntektskomponentResponse(
 data class ArbeidsinntektMaaned(
     @Serializable(with = YearMonthSerializer::class)
     val aarMaaned: YearMonth? = null,
-    val avvikListe: List<Avvik>?,
+    val avvikListe: List<Avvik>? = null,
     val arbeidsInntektInformasjon: ArbeidsInntektInformasjon? = null
 )
 

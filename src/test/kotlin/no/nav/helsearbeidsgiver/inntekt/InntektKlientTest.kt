@@ -7,6 +7,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 internal class InntektKlientTest {
@@ -22,6 +23,14 @@ internal class InntektKlientTest {
         val response: InntektskomponentResponse = runBlocking { klient.hentInntektListe("ident", "call-id", "consumerId", FRA, TIL, FILTER, FORMAAL) }
         assertNotNull(response)
         assertNotNull(response.arbeidsInntektMaaned)
+    }
+
+    @Test
+    fun `Skal returnere response OK`() {
+        val klient = BuildClient("eksempel.json".loadFromResources(), HttpStatusCode.OK)
+        val response: InntektskomponentResponse = runBlocking { klient.hentInntektListe("ident", "call-id", "consumerId", FRA, TIL, FILTER, FORMAAL) }
+        assertNotNull(response)
+        assertEquals(4, response.arbeidsInntektMaaned?.size)
     }
 
     @Test
