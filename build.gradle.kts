@@ -12,11 +12,15 @@ plugins {
 
 tasks {
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "11"
+        kotlinOptions.jvmTarget = "17"
     }
     test {
         useJUnitPlatform()
     }
+}
+
+java {
+    withSourcesJar()
 }
 
 repositories {
@@ -36,21 +40,25 @@ publishing {
 }
 
 dependencies {
+    val kotestVersion: String by project
+    val kotlinxCoroutinesVersion: String by project
+    val kotlinxSerializationVersion: String by project
     val ktorVersion: String by project
     val mockkVersion: String by project
-    val tokenproviderVersion: String by project
+    val utilsVersion: String by project
 
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-json:$ktorVersion")
-    implementation("io.ktor:ktor-client-serialization:$ktorVersion")
+    implementation("io.ktor:ktor-client-apache5:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.2.0")
-    implementation("no.nav.helsearbeidsgiver:tokenprovider:$tokenproviderVersion")
+    implementation("no.nav.helsearbeidsgiver:utils:$utilsVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
 
-    testImplementation(kotlin("test"))
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
 }
 
 fun RepositoryHandler.mavenNav(repo: String): MavenArtifactRepository {
