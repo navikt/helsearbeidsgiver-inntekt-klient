@@ -6,7 +6,6 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.http.HttpStatusCode
-import kotlinx.coroutines.runBlocking
 import java.time.Month
 import java.time.YearMonth
 
@@ -26,30 +25,26 @@ class InntektKlientTest : FunSpec({
 
         val klient = mockInntektKlient("response.json".readResource(), HttpStatusCode.OK)
 
-        val actualInntekt = runBlocking {
-            klient.hentInntektPerOrgnrOgMaaned(Mock.CALL_ID, Mock.CONSUMER_ID, "ident", Mock.FOM, Mock.TOM)
-        }
+        val actualInntekt = klient.hentInntektPerOrgnrOgMaaned(Mock.CALL_ID, Mock.CONSUMER_ID, "ident", Mock.FOM, Mock.TOM)
 
         actualInntekt shouldBe expectedInntekt
     }
 
     test("BadRequest gir ClientRequestException med status BadRequest") {
+        val klient = mockInntektKlient("", HttpStatusCode.BadRequest)
+
         val e = shouldThrowExactly<ClientRequestException> {
-            runBlocking {
-                val klient = mockInntektKlient("", HttpStatusCode.BadRequest)
-                klient.hentInntektPerOrgnrOgMaaned(Mock.CALL_ID, Mock.CONSUMER_ID, "ident", Mock.FOM, Mock.TOM)
-            }
+            klient.hentInntektPerOrgnrOgMaaned(Mock.CALL_ID, Mock.CONSUMER_ID, "ident", Mock.FOM, Mock.TOM)
         }
 
         e.response.status shouldBe HttpStatusCode.BadRequest
     }
 
     test("InternalServerError gir ServerResponseException med status InternalServerError") {
+        val klient = mockInntektKlient("", HttpStatusCode.InternalServerError)
+
         val e = shouldThrowExactly<ServerResponseException> {
-            runBlocking {
-                val klient = mockInntektKlient("", HttpStatusCode.InternalServerError)
-                klient.hentInntektPerOrgnrOgMaaned(Mock.CALL_ID, Mock.CONSUMER_ID, "ident", Mock.FOM, Mock.TOM)
-            }
+            klient.hentInntektPerOrgnrOgMaaned(Mock.CALL_ID, Mock.CONSUMER_ID, "ident", Mock.FOM, Mock.TOM)
         }
 
         e.response.status shouldBe HttpStatusCode.InternalServerError
