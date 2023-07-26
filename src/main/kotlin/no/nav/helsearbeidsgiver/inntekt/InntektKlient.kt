@@ -1,67 +1,54 @@
 package no.nav.helsearbeidsgiver.inntekt
 
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
+import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import io.ktor.serialization.JsonConvertException
-import no.nav.helsearbeidsgiver.tokenprovider.AccessTokenProvider
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import no.nav.helsearbeidsgiver.utils.json.fromJson
+import no.nav.helsearbeidsgiver.utils.json.toJson
+import java.time.YearMonth
 
 class InntektKlient(
     private val baseUrl: String,
-    private val stsClient: AccessTokenProvider,
-    private val httpClient: HttpClient
+    private val getAccessToken: () -> String
 ) {
+    private val httpClient = createHttpClient()
 
-    suspend fun hentInntektListe(
-        ident: String,
+    suspend fun hentInntektPerOrgnrOgMaaned(
         callId: String,
         navConsumerId: String,
-        fraOgMed: LocalDate,
-        tilOgMed: LocalDate,
-        filter: String = "MedlemskapA-inntekt",
-        formaal: String = "Medlemskap"
-    ): InntektskomponentResponse {
-        val token = stsClient.getToken()
-        try {
-            val httpResponse: HttpResponse = httpClient.post("$baseUrl/api/v1/hentinntektliste") {
-                header(HttpHeaders.Authorization, "Bearer $token")
-                header(HttpHeaders.ContentType, ContentType.Application.Json)
-                header("Nav-Call-Id", callId)
-                header("Nav-Consumer-Id", navConsumerId)
-                contentType(ContentType.Application.Json)
-                setBody(
-                    HentInntektListeRequest(
-                        ident = Ident(ident, "NATURLIG_IDENT"),
-                        ainntektsfilter = filter,
-                        maanedFom = fraOgMed.tilAarOgMnd(),
-                        maanedTom = tilOgMed.tilAarOgMnd(),
-                        formaal = formaal
-                    )
-                )
-            }
-            if (listOf(HttpStatusCode.OK).contains(httpResponse.status)) {
-                return httpResponse.body()
-            }
-            throw InntektKlientException("Fikk status: ${httpResponse.status} for callId: $callId", IkkeGodkjentStatus(httpResponse.status.value))
-        } catch (jsonEx: JsonConvertException) {
-            throw InntektKlientException("JsonConvert feilet for callId: $callId", jsonEx)
-        } catch (ex: Exception) {
-            throw InntektKlientException("Fikk feil for callId: $callId", ex)
-        }
-    }
+        fnr: String,
+        fom: YearMonth,
+        tom: YearMonth,
+        filter: String = "8-28",
+        formaal: String = "Sykepenger"
+    ): Map<String, Map<YearMonth, Double>> {
+        val request = InntektRequest(
+            ident = fnr.tilIdent(),
+            ainntektsfilter = filter,
+            maanedFom = fom,
+            maanedTom = tom,
+            formaal = formaal
+        )
+            .toJson(InntektRequest.serializer())
 
-    private fun LocalDate.tilAarOgMnd() = this.format(DateTimeFormatter.ofPattern("yyyy-MM"))
+        val response = httpClient.post("$baseUrl/api/v1/hentinntektliste") {
+            bearerAuth(getAccessToken())
+            contentType(ContentType.Application.Json)
+            header("Nav-Call-Id", callId)
+            header("Nav-Consumer-Id", navConsumerId)
+
+            setBody(request)
+        }
+            .bodyAsText()
+            .fromJson(InntektResponse.serializer())
+
+        return response.tilInntektPerOrgnrOgMaaned()
+    }
 }
 
-class IkkeGodkjentStatus(status: Int) : RuntimeException("Fikk status $status")
-
-class InntektKlientException(melding: String, throwable: Throwable) : RuntimeException(melding, throwable)
+private fun String.tilIdent(): Ident =
+    Ident(this, "NATURLIG_IDENT")

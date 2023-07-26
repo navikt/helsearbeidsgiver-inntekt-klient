@@ -1,65 +1,62 @@
-@file:Suppress("NonAsciiCharacters")
-
 package no.nav.helsearbeidsgiver.inntekt
 
+import io.kotest.assertions.throwables.shouldThrowExactly
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.ServerResponseException
 import io.ktor.http.HttpStatusCode
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import java.time.LocalDate
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
+import java.time.Month
+import java.time.YearMonth
 
-internal class InntektKlientTest {
+class InntektKlientTest : FunSpec({
 
-    val TIL = LocalDate.now()
-    val FRA = TIL.minusDays(90)
-    val FILTER = ""
-    val FORMAAL = ""
+    test("Returnerer inntekter dersom respons er OK") {
+        val expectedInntekt = mapOf(
+            "123456785" to mapOf(
+                YearMonth.of(2020, Month.APRIL) to (1.0 + 123.0 + 456.0),
+                YearMonth.of(2020, Month.MAY) to 789.0
+            ),
+            "111111111" to mapOf(
+                YearMonth.of(2020, Month.MAY) to (700.0 + 800.0),
+                YearMonth.of(2020, Month.JUNE) to 1000.0
+            )
+        )
 
-    @Test
-    fun `Skal returnere response når operasjon var velykket`() {
-        val klient = BuildClient("response.json".loadFromResources(), HttpStatusCode.OK)
-        val response: InntektskomponentResponse = runBlocking { klient.hentInntektListe("ident", "call-id", "consumerId", FRA, TIL, FILTER, FORMAAL) }
-        assertNotNull(response)
-        assertNotNull(response.arbeidsInntektMaaned)
+        val klient = mockInntektKlient("response.json".readResource(), HttpStatusCode.OK)
+
+        val actualInntekt = klient.hentInntektPerOrgnrOgMaaned(Mock.CALL_ID, Mock.CONSUMER_ID, "ident", Mock.FOM, Mock.TOM)
+
+        actualInntekt shouldBe expectedInntekt
     }
 
-    @Test
-    fun `Skal returnere response OK`() {
-        val klient = BuildClient("eksempel.json".loadFromResources(), HttpStatusCode.OK)
-        val response: InntektskomponentResponse = runBlocking { klient.hentInntektListe("ident", "call-id", "consumerId", FRA, TIL, FILTER, FORMAAL) }
-        assertNotNull(response)
-        assertEquals(4, response.arbeidsInntektMaaned?.size)
-    }
+    test("BadRequest gir ClientRequestException med status BadRequest") {
+        val klient = mockInntektKlient("", HttpStatusCode.BadRequest)
 
-    @Test
-    fun `Skal håndtere forbidden`() {
-        assertThrows<InntektKlientException> {
-            runBlocking {
-                val klient = BuildClient("response.json".loadFromResources(), HttpStatusCode.Forbidden)
-                klient.hentInntektListe("ident", "call-id", "consumerId", FRA, TIL, FILTER, FORMAAL)
-            }
+        val e = shouldThrowExactly<ClientRequestException> {
+            klient.hentInntektPerOrgnrOgMaaned(Mock.CALL_ID, Mock.CONSUMER_ID, "ident", Mock.FOM, Mock.TOM)
         }
+
+        e.response.status shouldBe HttpStatusCode.BadRequest
     }
 
-    @Test
-    fun `Skal håndtere BadRequest`() {
-        assertThrows<InntektKlientException> {
-            runBlocking {
-                val klient = BuildClient("response.json".loadFromResources(), HttpStatusCode.BadRequest)
-                klient.hentInntektListe("ident", "call-id", "consumerId", FRA, TIL, FILTER, FORMAAL)
-            }
-        }
-    }
+    test("InternalServerError gir ServerResponseException med status InternalServerError") {
+        val klient = mockInntektKlient("", HttpStatusCode.InternalServerError)
 
-    @Test
-    fun `Skal håndtere 500`() {
-        assertThrows<InntektKlientException> {
-            runBlocking {
-                val klient = BuildClient("response.json".loadFromResources(), HttpStatusCode.InternalServerError)
-                klient.hentInntektListe("ident", "call-id", "consumerId", FRA, TIL, FILTER, FORMAAL)
-            }
+        val e = shouldThrowExactly<ServerResponseException> {
+            klient.hentInntektPerOrgnrOgMaaned(Mock.CALL_ID, Mock.CONSUMER_ID, "ident", Mock.FOM, Mock.TOM)
         }
+
+        e.response.status shouldBe HttpStatusCode.InternalServerError
     }
+})
+
+private object Mock {
+    const val CALL_ID = "mockCallId"
+    const val CONSUMER_ID = "mockConsumerId"
+    val TOM: YearMonth = YearMonth.now()
+    val FOM: YearMonth = TOM.minusMonths(3)
 }
+
+private fun String.readResource(): String =
+    ClassLoader.getSystemResource(this)?.readText()!!
