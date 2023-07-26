@@ -2,7 +2,10 @@ package no.nav.helsearbeidsgiver.inntekt
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import java.time.Month
+import no.nav.helsearbeidsgiver.utils.test.date.april
+import no.nav.helsearbeidsgiver.utils.test.date.februar
+import no.nav.helsearbeidsgiver.utils.test.date.januar
+import no.nav.helsearbeidsgiver.utils.test.date.mars
 import java.time.YearMonth
 
 class InntektUtilsKtTest : FunSpec({
@@ -11,14 +14,14 @@ class InntektUtilsKtTest : FunSpec({
         test("mapper korrekt") {
             val expected = mapOf(
                 UtilsMock.ORGNR_1 to mapOf(
-                    YearMonth.of(2020, Month.JANUARY) to (1.0 + 20.0 + 300.0),
-                    YearMonth.of(2020, Month.FEBRUARY) to 4000.0,
-                    YearMonth.of(2020, Month.MARCH) to 600_000.0,
+                    januar(2020) to (1.0 + 20.0 + 300.0),
+                    februar(2020) to 4000.0,
+                    mars(2020) to 600_000.0,
                 ),
                 UtilsMock.ORGNR_2 to mapOf(
-                    YearMonth.of(2020, Month.FEBRUARY) to (50_000.0 + 7_000_000.0),
-                    YearMonth.of(2020, Month.MARCH) to 80_000_000.0,
-                    YearMonth.of(2020, Month.APRIL) to 900_000_000.0,
+                    februar(2020) to (50_000.0 + 7_000_000.0),
+                    mars(2020) to 80_000_000.0,
+                    april(2020) to 900_000_000.0,
                 ),
             )
 
@@ -30,7 +33,7 @@ class InntektUtilsKtTest : FunSpec({
         test("fjerner verdier uten orgnr, maaned eller inntekt") {
             val expected = mapOf(
                 UtilsMock.ORGNR_1 to mapOf(
-                    YearMonth.of(1920, Month.JANUARY) to 1.0,
+                    januar(1920) to 1.0,
                 ),
             )
 
@@ -47,49 +50,28 @@ private object UtilsMock {
 
     val respons = InntektResponse(
         arbeidsInntektMaaned = listOf(
-            mockInntektPerMaaned(
-                maaned = YearMonth.of(2020, Month.JANUARY),
-                inntekter = listOf(
-                    mockInntektPerVirksomhet(orgnr = ORGNR_1, inntekt = 1.0),
-                    mockInntektPerVirksomhet(orgnr = ORGNR_1, inntekt = 20.0),
-                ),
+            januar(2020).medInntekter(
+                ORGNR_1.medInntekt(1.0),
+                ORGNR_1.medInntekt(20.0),
             ),
-            mockInntektPerMaaned(
-                maaned = YearMonth.of(2020, Month.JANUARY),
-                inntekter = listOf(
-                    mockInntektPerVirksomhet(orgnr = ORGNR_1, inntekt = 300.0),
-                ),
+            januar(2020).medInntekter(
+                ORGNR_1.medInntekt(300.0),
             ),
-            mockInntektPerMaaned(
-                maaned = YearMonth.of(2020, Month.FEBRUARY),
-                inntekter = listOf(
-                    mockInntektPerVirksomhet(orgnr = ORGNR_1, inntekt = 4000.0),
-                    mockInntektPerVirksomhet(orgnr = ORGNR_2, inntekt = 50_000.0),
-                ),
+            februar(2020).medInntekter(
+                ORGNR_1.medInntekt(4000.0),
+                ORGNR_2.medInntekt(50_000.0),
             ),
-            mockInntektPerMaaned(
-                maaned = YearMonth.of(2020, Month.MARCH),
-                inntekter = listOf(
-                    mockInntektPerVirksomhet(orgnr = ORGNR_1, inntekt = 600_000.0),
-                ),
+            mars(2020).medInntekter(
+                ORGNR_1.medInntekt(600_000.0),
             ),
-            mockInntektPerMaaned(
-                maaned = YearMonth.of(2020, Month.FEBRUARY),
-                inntekter = listOf(
-                    mockInntektPerVirksomhet(orgnr = ORGNR_2, inntekt = 7_000_000.0),
-                ),
+            februar(2020).medInntekter(
+                ORGNR_2.medInntekt(7_000_000.0),
             ),
-            mockInntektPerMaaned(
-                maaned = YearMonth.of(2020, Month.MARCH),
-                inntekter = listOf(
-                    mockInntektPerVirksomhet(orgnr = ORGNR_2, inntekt = 80_000_000.0),
-                ),
+            mars(2020).medInntekter(
+                ORGNR_2.medInntekt(80_000_000.0),
             ),
-            mockInntektPerMaaned(
-                maaned = YearMonth.of(2020, Month.APRIL),
-                inntekter = listOf(
-                    mockInntektPerVirksomhet(orgnr = ORGNR_2, inntekt = 900_000_000.0),
-                ),
+            april(2020).medInntekter(
+                ORGNR_2.medInntekt(900_000_000.0),
             ),
         ),
     )
@@ -97,50 +79,38 @@ private object UtilsMock {
     val responsMedUfullstendigeInntekter = InntektResponse(
         arbeidsInntektMaaned = listOf(
             // OK
-            mockInntektPerMaaned(
-                maaned = YearMonth.of(1920, Month.JANUARY),
-                inntekter = listOf(
-                    mockInntektPerVirksomhet(orgnr = ORGNR_1, inntekt = 1.0),
-                ),
+            januar(1920).medInntekter(
+                ORGNR_1.medInntekt(1.0),
             ),
             // Orgnr mangler
-            mockInntektPerMaaned(
-                maaned = YearMonth.of(1920, Month.FEBRUARY),
-                inntekter = listOf(
-                    mockInntektPerVirksomhet(orgnr = null, inntekt = 20.0),
-                ),
+            februar(1920).medInntekter(
+                null.medInntekt(20.0),
             ),
             // Måned mangler
-            mockInntektPerMaaned(
-                maaned = null,
-                inntekter = listOf(
-                    mockInntektPerVirksomhet(orgnr = ORGNR_1, inntekt = 300.0),
-                ),
+            null.medInntekter(
+                ORGNR_1.medInntekt(300.0),
             ),
             // Inntekt mangler
-            mockInntektPerMaaned(
-                maaned = YearMonth.of(1920, Month.APRIL),
-                inntekter = listOf(
-                    mockInntektPerVirksomhet(orgnr = ORGNR_1, inntekt = null),
-                ),
+            april(1920).medInntekter(
+                ORGNR_1.medInntekt(null),
             ),
         ),
     )
 }
 
-private fun mockInntektPerMaaned(maaned: YearMonth?, inntekter: List<InntektPerVirksomhet>): InntekterPerMaaned =
+private fun YearMonth?.medInntekter(vararg inntekter: InntektPerVirksomhet): InntekterPerMaaned =
     InntekterPerMaaned(
-        aarMaaned = maaned,
+        aarMaaned = this,
         arbeidsInntektInformasjon = Inntekter(
-            inntektListe = inntekter,
+            inntektListe = inntekter.toList(),
         ),
     )
 
-private fun mockInntektPerVirksomhet(orgnr: String?, inntekt: Double?): InntektPerVirksomhet =
+private fun String?.medInntekt(inntekt: Double?): InntektPerVirksomhet =
     InntektPerVirksomhet(
         beloep = inntekt,
         virksomhet = Ident(
-            identifikator = orgnr,
+            identifikator = this,
             aktoerType = null,
         ),
     )

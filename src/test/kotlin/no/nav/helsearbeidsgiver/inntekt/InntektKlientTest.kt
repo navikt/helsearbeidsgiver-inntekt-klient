@@ -6,8 +6,10 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.http.HttpStatusCode
+import no.nav.helsearbeidsgiver.utils.test.date.april
+import no.nav.helsearbeidsgiver.utils.test.date.juni
+import no.nav.helsearbeidsgiver.utils.test.date.mai
 import no.nav.helsearbeidsgiver.utils.test.resource.readResource
-import java.time.Month
 import java.time.YearMonth
 
 class InntektKlientTest : FunSpec({
@@ -15,12 +17,12 @@ class InntektKlientTest : FunSpec({
     test("Returnerer inntekter dersom respons er OK") {
         val expectedInntekt = mapOf(
             "123456785" to mapOf(
-                YearMonth.of(2020, Month.APRIL) to (1.0 + 123.0 + 456.0),
-                YearMonth.of(2020, Month.MAY) to 789.0,
+                april(2020) to (1.0 + 123.0 + 456.0),
+                mai(2020) to 789.0,
             ),
             "111111111" to mapOf(
-                YearMonth.of(2020, Month.MAY) to (700.0 + 800.0),
-                YearMonth.of(2020, Month.JUNE) to 1000.0,
+                mai(2020) to (700.0 + 800.0),
+                juni(2020) to 1000.0,
             ),
         )
 
