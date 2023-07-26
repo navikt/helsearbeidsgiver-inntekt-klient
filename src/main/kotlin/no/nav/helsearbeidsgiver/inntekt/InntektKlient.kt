@@ -18,28 +18,24 @@ class InntektKlient(
     private val httpClient = createHttpClient()
 
     suspend fun hentInntektPerOrgnrOgMaaned(
-        callId: String,
-        navConsumerId: String,
         fnr: String,
         fom: YearMonth,
         tom: YearMonth,
-        filter: String = "8-28",
-        formaal: String = "Sykepenger",
+        navConsumerId: String,
+        callId: String,
     ): Map<String, Map<YearMonth, Double>> {
         val request = InntektRequest(
             ident = fnr.tilIdent(),
             maanedFom = fom,
             maanedTom = tom,
-            ainntektsfilter = filter,
-            formaal = formaal,
         )
             .toJson(InntektRequest.serializer())
 
         val response = httpClient.post("$baseUrl/api/v1/hentinntektliste") {
-            bearerAuth(getAccessToken())
             contentType(ContentType.Application.Json)
-            header("Nav-Call-Id", callId)
+            bearerAuth(getAccessToken())
             header("Nav-Consumer-Id", navConsumerId)
+            header("Nav-Call-Id", callId)
 
             setBody(request)
         }

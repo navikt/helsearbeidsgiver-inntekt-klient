@@ -2,19 +2,26 @@
 
 package no.nav.helsearbeidsgiver.inntekt
 
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import no.nav.helsearbeidsgiver.utils.json.serializer.YearMonthSerializer
 import java.time.YearMonth
 
 @Serializable
+@OptIn(ExperimentalSerializationApi::class)
 internal data class InntektRequest(
     val ident: Ident,
-    val ainntektsfilter: String,
     val maanedFom: YearMonth,
     val maanedTom: YearMonth,
-    val formaal: String,
-)
+) {
+    @EncodeDefault
+    val ainntektsfilter = "8-28"
+
+    @EncodeDefault
+    val formaal = "Sykepenger"
+}
 
 @Serializable
 internal data class InntektResponse(

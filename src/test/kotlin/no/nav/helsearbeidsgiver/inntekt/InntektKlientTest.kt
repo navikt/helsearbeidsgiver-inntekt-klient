@@ -28,7 +28,7 @@ class InntektKlientTest : FunSpec({
 
         val klient = mockInntektKlient("response.json".readResource(), HttpStatusCode.OK)
 
-        val actualInntekt = klient.hentInntektPerOrgnrOgMaaned(Mock.CALL_ID, Mock.CONSUMER_ID, "ident", Mock.FOM, Mock.TOM)
+        val actualInntekt = klient.hentInntektPerOrgnrOgMaaned("ident", Mock.FOM, Mock.TOM, Mock.CONSUMER_ID, Mock.CALL_ID)
 
         actualInntekt shouldBe expectedInntekt
     }
@@ -37,7 +37,7 @@ class InntektKlientTest : FunSpec({
         val klient = mockInntektKlient("", HttpStatusCode.BadRequest)
 
         val e = shouldThrowExactly<ClientRequestException> {
-            klient.hentInntektPerOrgnrOgMaaned(Mock.CALL_ID, Mock.CONSUMER_ID, "ident", Mock.FOM, Mock.TOM)
+            klient.hentInntektPerOrgnrOgMaaned("ident", Mock.FOM, Mock.TOM, Mock.CONSUMER_ID, Mock.CALL_ID)
         }
 
         e.response.status shouldBe HttpStatusCode.BadRequest
@@ -47,7 +47,7 @@ class InntektKlientTest : FunSpec({
         val klient = mockInntektKlient("", HttpStatusCode.InternalServerError)
 
         val e = shouldThrowExactly<ServerResponseException> {
-            klient.hentInntektPerOrgnrOgMaaned(Mock.CALL_ID, Mock.CONSUMER_ID, "ident", Mock.FOM, Mock.TOM)
+            klient.hentInntektPerOrgnrOgMaaned("ident", Mock.FOM, Mock.TOM, Mock.CONSUMER_ID, Mock.CALL_ID)
         }
 
         e.response.status shouldBe HttpStatusCode.InternalServerError
