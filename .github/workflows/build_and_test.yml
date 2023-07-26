@@ -1,12 +1,13 @@
-name: Build and publish
+name: Build and test
 
 on:
+  pull_request:
   push:
     branches:
       - main
+
 jobs:
-  build:
-    name: Build and push
+  build_and_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,10 +17,10 @@ jobs:
           distribution: temurin
           cache: gradle
 
-      - name: Verify Gradle wrapper checksum
-        uses: gradle/wrapper-validation-action@v1
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
-      - name: Build with Gradle and Publish artifact
-        run: ./gradlew build publish
+      - name: Build and test
+        run: ./gradlew build test
         env:
           ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
