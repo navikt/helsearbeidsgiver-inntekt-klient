@@ -21,14 +21,27 @@ internal fun InntektResponse.tilInntektPerOrgnrOgMaaned(): Map<String, Map<YearM
                 }
         }
         .filterNotNull()
-        .groupBy { (orgnr, _, _) -> orgnr }
-        .mapValues { (_, inntektPerOrgnr) ->
-            inntektPerOrgnr.groupBy { (_, maaned, _) -> maaned }
-                .mapValues { (_, inntektPerMaaned) ->
-                    inntektPerMaaned.map { (_, _, inntekt) -> inntekt }
-                        .sumMoney()
-                }
+        .map(::Inntekt)
+        .toMap(Inntekt::orgnr) { inntektPerOrgnr ->
+            inntektPerOrgnr.toMap(Inntekt::maaned) { inntektPerMaaned ->
+                inntektPerMaaned.map(Inntekt::inntekt).sumMoney()
+            }
         }
+
+private data class Inntekt(
+    val orgnr: String,
+    val maaned: YearMonth,
+    val inntekt: Double,
+) {
+    constructor(inntekt: Triple<String, YearMonth, Double>) : this(inntekt.first, inntekt.second, inntekt.third)
+}
+
+private fun <K : Any, V : Any> List<Inntekt>.toMap(
+    toKeyGroup: (Inntekt) -> K,
+    groupToValue: (List<Inntekt>) -> V,
+): Map<K, V> =
+    groupBy(toKeyGroup)
+        .mapValues { groupToValue(it.value) }
 
 /** Forhindrer avrundingsfeil. */
 private fun List<Double>.sumMoney(): Double =
