@@ -13,7 +13,7 @@ import java.time.YearMonth
 
 class InntektKlient(
     private val baseUrl: String,
-    private val getAccessToken: () -> String
+    private val getAccessToken: () -> String,
 ) {
     private val httpClient = createHttpClient()
 
@@ -24,14 +24,14 @@ class InntektKlient(
         fom: YearMonth,
         tom: YearMonth,
         filter: String = "8-28",
-        formaal: String = "Sykepenger"
+        formaal: String = "Sykepenger",
     ): Map<String, Map<YearMonth, Double>> {
         val request = InntektRequest(
             ident = fnr.tilIdent(),
-            ainntektsfilter = filter,
             maanedFom = fom,
             maanedTom = tom,
-            formaal = formaal
+            ainntektsfilter = filter,
+            formaal = formaal,
         )
             .toJson(InntektRequest.serializer())
 

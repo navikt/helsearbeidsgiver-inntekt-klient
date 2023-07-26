@@ -15,12 +15,12 @@ class InntektKlientTest : FunSpec({
         val expectedInntekt = mapOf(
             "123456785" to mapOf(
                 YearMonth.of(2020, Month.APRIL) to (1.0 + 123.0 + 456.0),
-                YearMonth.of(2020, Month.MAY) to 789.0
+                YearMonth.of(2020, Month.MAY) to 789.0,
             ),
             "111111111" to mapOf(
                 YearMonth.of(2020, Month.MAY) to (700.0 + 800.0),
-                YearMonth.of(2020, Month.JUNE) to 1000.0
-            )
+                YearMonth.of(2020, Month.JUNE) to 1000.0,
+            ),
         )
 
         val klient = mockInntektKlient("response.json".readResource(), HttpStatusCode.OK)

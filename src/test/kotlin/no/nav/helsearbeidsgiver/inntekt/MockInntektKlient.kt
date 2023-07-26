@@ -14,13 +14,13 @@ import kotlin.reflect.KFunction
 
 fun mockInntektKlient(
     content: String,
-    status: HttpStatusCode
+    status: HttpStatusCode,
 ): InntektKlient {
     val mockEngine = MockEngine {
         respond(
             content = content,
             status = status,
-            headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+            headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
         )
     }
 

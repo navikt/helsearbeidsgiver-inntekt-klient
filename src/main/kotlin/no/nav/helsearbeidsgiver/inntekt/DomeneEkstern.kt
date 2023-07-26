@@ -13,33 +13,33 @@ internal data class InntektRequest(
     val ainntektsfilter: String,
     val maanedFom: YearMonth,
     val maanedTom: YearMonth,
-    val formaal: String
+    val formaal: String,
 )
 
 @Serializable
 internal data class InntektResponse(
-    val arbeidsInntektMaaned: List<InntekterPerMaaned>? = null
+    val arbeidsInntektMaaned: List<InntekterPerMaaned>? = null,
 )
 
 @Serializable
 internal data class InntekterPerMaaned(
     val aarMaaned: YearMonth? = null,
-    val arbeidsInntektInformasjon: Inntekter? = null
+    val arbeidsInntektInformasjon: Inntekter? = null,
 )
 
 @Serializable
 internal data class Inntekter(
-    val inntektListe: List<InntektPerVirksomhet>? = null
+    val inntektListe: List<InntektPerVirksomhet>? = null,
 )
 
 @Serializable
 internal data class InntektPerVirksomhet(
     val virksomhet: Ident? = null,
-    val beloep: Double? = null
+    val beloep: Double? = null,
 )
 
 @Serializable
 internal data class Ident(
     val identifikator: String? = null,
-    val aktoerType: String? = null
+    val aktoerType: String? = null,
 )

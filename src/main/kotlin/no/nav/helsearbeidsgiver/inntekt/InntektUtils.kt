@@ -16,7 +16,7 @@ internal fun InntektResponse.tilInntektPerOrgnrOgMaaned(): Map<String, Map<YearM
                     Triple(
                         it.virksomhet?.identifikator,
                         inntekterPerMaaned.aarMaaned,
-                        it.beloep
+                        it.beloep,
                     )
                 }
         }
