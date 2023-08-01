@@ -5,6 +5,7 @@ import io.kotest.matchers.shouldBe
 import no.nav.helsearbeidsgiver.utils.test.date.april
 import no.nav.helsearbeidsgiver.utils.test.date.februar
 import no.nav.helsearbeidsgiver.utils.test.date.januar
+import no.nav.helsearbeidsgiver.utils.test.date.mai
 import no.nav.helsearbeidsgiver.utils.test.date.mars
 import java.time.YearMonth
 
@@ -38,6 +39,18 @@ class InntektUtilsKtTest : FunSpec({
             )
 
             val actual = UtilsMock.responsMedUfullstendigeInntekter.tilInntektPerOrgnrOgMaaned()
+
+            actual shouldBe expected
+        }
+
+        test("forhindrer avrundingsfeil") {
+            val expected = mapOf(
+                UtilsMock.ORGNR_1 to mapOf(
+                    mai(1867) to 0.3,
+                ),
+            )
+
+            val actual = UtilsMock.responsMedPotensiellAvrundingsfeil.tilInntektPerOrgnrOgMaaned()
 
             actual shouldBe expected
         }
@@ -93,6 +106,17 @@ private object UtilsMock {
             // Inntekt mangler
             april(1920).medInntekter(
                 ORGNR_1.medInntekt(null),
+            ),
+        ),
+    )
+
+    val responsMedPotensiellAvrundingsfeil = InntektResponse(
+        arbeidsInntektMaaned = listOf(
+            mai(1867).medInntekter(
+                ORGNR_1.medInntekt(0.1),
+            ),
+            mai(1867).medInntekter(
+                ORGNR_1.medInntekt(0.2),
             ),
         ),
     )
