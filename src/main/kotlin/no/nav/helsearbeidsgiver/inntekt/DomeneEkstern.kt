@@ -30,7 +30,7 @@ internal data class InntektResponse(
 
 @Serializable
 internal data class InntekterPerMaaned(
-    val aarMaaned: YearMonth? = null,
+    val aarMaaned: YearMonth,
     val arbeidsInntektInformasjon: Inntekter? = null,
 )
 
@@ -41,12 +41,12 @@ internal data class Inntekter(
 
 @Serializable
 internal data class InntektPerVirksomhet(
-    val virksomhet: Ident? = null,
-    val beloep: Double? = null,
+    val virksomhet: Ident,
+    val beloep: Double,
 )
 
 @Serializable
 internal data class Ident(
-    val identifikator: String? = null,
+    val identifikator: String,
     val aktoerType: String? = null,
 )

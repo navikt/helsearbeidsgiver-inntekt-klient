@@ -31,18 +31,6 @@ class InntektUtilsKtTest : FunSpec({
             actual shouldBe expected
         }
 
-        test("fjerner verdier uten orgnr, maaned eller inntekt") {
-            val expected = mapOf(
-                UtilsMock.ORGNR_1 to mapOf(
-                    januar(1920) to 1.0,
-                ),
-            )
-
-            val actual = UtilsMock.responsMedUfullstendigeInntekter.tilInntektPerOrgnrOgMaaned()
-
-            actual shouldBe expected
-        }
-
         test("forhindrer avrundingsfeil") {
             val expected = mapOf(
                 UtilsMock.ORGNR_1 to mapOf(
@@ -89,27 +77,6 @@ private object UtilsMock {
         ),
     )
 
-    val responsMedUfullstendigeInntekter = InntektResponse(
-        arbeidsInntektMaaned = listOf(
-            // OK
-            januar(1920).medInntekter(
-                ORGNR_1.medInntekt(1.0),
-            ),
-            // Orgnr mangler
-            februar(1920).medInntekter(
-                null.medInntekt(20.0),
-            ),
-            // Måned mangler
-            null.medInntekter(
-                ORGNR_1.medInntekt(300.0),
-            ),
-            // Inntekt mangler
-            april(1920).medInntekter(
-                ORGNR_1.medInntekt(null),
-            ),
-        ),
-    )
-
     val responsMedPotensiellAvrundingsfeil = InntektResponse(
         arbeidsInntektMaaned = listOf(
             mai(1867).medInntekter(
@@ -122,7 +89,7 @@ private object UtilsMock {
     )
 }
 
-private fun YearMonth?.medInntekter(vararg inntekter: InntektPerVirksomhet): InntekterPerMaaned =
+private fun YearMonth.medInntekter(vararg inntekter: InntektPerVirksomhet): InntekterPerMaaned =
     InntekterPerMaaned(
         aarMaaned = this,
         arbeidsInntektInformasjon = Inntekter(
@@ -130,7 +97,7 @@ private fun YearMonth?.medInntekter(vararg inntekter: InntektPerVirksomhet): Inn
         ),
     )
 
-private fun String?.medInntekt(inntekt: Double?): InntektPerVirksomhet =
+private fun String.medInntekt(inntekt: Double): InntektPerVirksomhet =
     InntektPerVirksomhet(
         beloep = inntekt,
         virksomhet = Ident(
