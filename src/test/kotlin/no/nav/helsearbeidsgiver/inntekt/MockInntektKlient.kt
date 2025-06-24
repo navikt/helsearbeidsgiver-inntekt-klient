@@ -28,6 +28,6 @@ fun mockInntektKlient(
 
     return mockStatic(::createHttpClient) {
         every { createHttpClient() } returns mockHttpClient
-        InntektKlient("baseUrl", LocalCache.Config(Duration.ZERO, 1)) { "mock access token" }
+        InntektKlient("baseUrl", LocalCache.Config(entryDuration = Duration.ZERO, maxEntries = 1)) { "mock access token" }
     }
 }
