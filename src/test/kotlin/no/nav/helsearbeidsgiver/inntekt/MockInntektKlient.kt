@@ -8,7 +8,9 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.mockk.every
+import no.nav.helsearbeidsgiver.utils.cache.LocalCache
 import no.nav.helsearbeidsgiver.utils.test.mock.mockStatic
+import kotlin.time.Duration
 
 fun mockInntektKlient(
     content: String,
@@ -26,6 +28,6 @@ fun mockInntektKlient(
 
     return mockStatic(::createHttpClient) {
         every { createHttpClient() } returns mockHttpClient
-        InntektKlient("url") { "mock access token" }
+        InntektKlient("baseUrl", LocalCache.Config(entryDuration = Duration.ZERO, maxEntries = 1)) { "mock access token" }
     }
 }
