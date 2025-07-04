@@ -1,7 +1,5 @@
 package no.nav.helsearbeidsgiver.inntekt
 
-import io.kotest.core.test.testCoroutineScheduler
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -10,12 +8,11 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.mockk.every
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import no.nav.helsearbeidsgiver.utils.cache.LocalCache
 import no.nav.helsearbeidsgiver.utils.test.mock.mockStatic
 import kotlin.time.Duration
 
-@OptIn(ExperimentalStdlibApi::class, ExperimentalCoroutinesApi::class)
 fun mockInntektKlient(vararg responses: Pair<HttpStatusCode, String>): InntektKlient {
     val mockEngine = MockEngine.create {
         reuseHandlers = false
@@ -23,8 +20,7 @@ fun mockInntektKlient(vararg responses: Pair<HttpStatusCode, String>): InntektKl
             responses.map { (status, content) ->
                 {
                     if (content == "timeout") {
-                        // Skrur den virtuelle klokka fremover, nok til at timeout forårsakes
-                        dispatcher.shouldNotBeNull().testCoroutineScheduler.advanceTimeBy(1)
+                        delay(2100)
                     }
                     respond(
                         content = content,
