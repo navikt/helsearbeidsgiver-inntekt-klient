@@ -16,8 +16,7 @@ internal fun InntektResponse.tilInntektPerOrgnrOgMaaned(): Map<String, Map<YearM
                         inntekt = it.beloep,
                     )
                 }
-        }
-        .toMap(Inntekt::orgnr) { inntektPerOrgnr ->
+        }.toMap(Inntekt::orgnr) { inntektPerOrgnr ->
             inntektPerOrgnr.toMap(Inntekt::maaned) { inntektPerMaaned ->
                 inntektPerMaaned.map(Inntekt::inntekt).sumMoney()
             }
