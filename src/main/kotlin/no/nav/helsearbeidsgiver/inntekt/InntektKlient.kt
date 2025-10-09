@@ -28,24 +28,24 @@ class InntektKlient(
         navConsumerId: String,
         callId: String,
     ): Map<String, Map<YearMonth, Double>> {
-        val request = InntektRequest(
-            ident = fnr.tilIdent(),
-            maanedFom = fom,
-            maanedTom = tom,
-        )
-            .toJson(InntektRequest.serializer())
+        val request =
+            InntektRequest(
+                ident = fnr.tilIdent(),
+                maanedFom = fom,
+                maanedTom = tom,
+            ).toJson(InntektRequest.serializer())
 
         val response =
             cache.getOrPut(request.toString()) {
-                httpClient.post(url) {
-                    contentType(ContentType.Application.Json)
-                    bearerAuth(getAccessToken())
-                    header("Nav-Consumer-Id", navConsumerId)
-                    header("Nav-Call-Id", callId)
+                httpClient
+                    .post(url) {
+                        contentType(ContentType.Application.Json)
+                        bearerAuth(getAccessToken())
+                        header("Nav-Consumer-Id", navConsumerId)
+                        header("Nav-Call-Id", callId)
 
-                    setBody(request)
-                }
-                    .bodyAsText()
+                        setBody(request)
+                    }.bodyAsText()
                     .fromJson(InntektResponse.serializer())
             }
 
@@ -53,5 +53,4 @@ class InntektKlient(
     }
 }
 
-private fun String.tilIdent(): Ident =
-    Ident(this, "NATURLIG_IDENT")
+private fun String.tilIdent(): Ident = Ident(this, "NATURLIG_IDENT")

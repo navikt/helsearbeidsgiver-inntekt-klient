@@ -14,23 +14,24 @@ import no.nav.helsearbeidsgiver.utils.test.mock.mockStatic
 import kotlin.time.Duration
 
 fun mockInntektKlient(vararg responses: Pair<HttpStatusCode, String>): InntektKlient {
-    val mockEngine = MockEngine.create {
-        reuseHandlers = false
-        requestHandlers.addAll(
-            responses.map { (status, content) ->
-                {
-                    if (content == "timeout") {
-                        delay(2100)
+    val mockEngine =
+        MockEngine.create {
+            reuseHandlers = false
+            requestHandlers.addAll(
+                responses.map { (status, content) ->
+                    {
+                        if (content == "timeout") {
+                            delay(2100)
+                        }
+                        respond(
+                            content = content,
+                            status = status,
+                            headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+                        )
                     }
-                    respond(
-                        content = content,
-                        status = status,
-                        headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
-                    )
-                }
-            },
-        )
-    }
+                },
+            )
+        }
 
     val mockHttpClient = HttpClient(mockEngine) { configure() }
 
